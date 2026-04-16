@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dřevo na topení – Palivové a krbové dřevo | Královéhradecký kraj</title>
+    <meta name="description" content="Prodej štípaného palivového a krbového dřeva v Královéhradeckém kraji. Dodáváme do Trutnova, Dvora Králové, Vrchlabí a okolí. Od roku 2001.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #050505;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-nav: rgba(5, 5, 5, 0.6);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #f97316;
+            --accent-glow: rgba(249, 115, 22, 0.4);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(249, 115, 22, 0.5);
+            --font: 'Outfit', system-ui, -apple-system, sans-serif;
+        }
+
+        html { 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-dark);
+        }
+
+        body {
+            font-family: var(--font);
+            background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--bg-dark) 40%);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ── GLOW EFFECTS ── */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: var(--accent);
+            filter: blur(150px);
+            opacity: 0.15;
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .glow-top-right { top: -200px; right: -200px; }
+        .glow-bottom-left { bottom: 100px; left: -200px; }
+        .glow-center { top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08; width: 800px; height: 800px; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-nav);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid transparent;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        nav.scrolled {
+            border-bottom-color: var(--border-color);
+            height: 70px;
+            background: rgba(5, 5, 5, 0.85);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .nav-logo { height: 36px; filter: invert(1); transition: transform 0.3s ease; }
+        .nav-logo:hover { transform: scale(1.05); }
+
+        .nav-center {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-center a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .nav-center a:hover { 
+            color: var(--text-main); 
+            text-shadow: 0 0 12px rgba(255,255,255,0.3);
+        }
+        
+        .nav-center a:hover::after { width: 100%; }
+
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #000;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 0.7rem 1.6rem;
+            background: linear-gradient(135deg, #ff914d 0%, #ea580c 100%);
+            border-radius: 100px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(249, 115, 22, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .nav-cta svg { width: 16px; height: 16px; }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 101;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text-main);
+            margin: 6px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            box-shadow: 0 0 5px rgba(255,255,255,0.2);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 800px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+            mix-blend-mode: luminosity;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to right,
+                rgba(5, 5, 5, 0.95) 0%,
+                rgba(5, 5, 5, 0.7) 40%,
+                rgba(5, 5, 5, 0.4) 100%
+            ),
+            linear-gradient(
+                to bottom,
+                rgba(5, 5, 5, 0) 60%,
+                rgba(5, 5, 5, 1) 100%
+            );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            transform: translateY(-20px);
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-eyebrow {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.1) inset;
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 8vw, 6.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            position: relative;
+        }
+
+        .hero-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: var(--accent);
+            opacity: 0.2;
+            filter: blur(10px);
+            z-index: -1;
+        }
+
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 550px;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1.1rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 100px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            color: #000;
+            box-shadow: 0 0 0 0 rgba(255,255,255,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,255,255,0.2), 0 0 15px rgba(255,255,255,0.4);
+            color: #000;
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, #ff914d 0%, #ea580c 100%);
+            color: #000;
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(249, 115, 22, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .btn svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* ── SECTIONS ── */
+        section { 
+            padding: 8rem 3rem; 
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            margin-bottom: 5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-eyebrow {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-eyebrow::before, .section-eyebrow::after {
+            content: '';
+            height: 1px;
+            width: 30px;
+            background: var(--accent);
+            opacity: 0.5;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .section-title strong { 
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title .orange-text {
+            background: linear-gradient(135deg, #ff914d, #ea580c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ── STATS ROW ── */
+        .stats-wrapper {
+            background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.02) 50%, transparent 100%);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+            padding: 5rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            flex: 1;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px rgba(249, 115, 22, 0.05);
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .stat-item:hover::before { opacity: 1; }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── O NÁS ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            mix-blend-mode: luminosity;
+            transition: all 0.5s ease;
+            opacity: 0.7;
+        }
+
+        .about-image:hover img {
+            mix-blend-mode: normal;
+            transform: scale(1.05);
+            opacity: 1;
+        }
+        
+        .about-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+            border-radius: 30px;
+            pointer-events: none;
+        }
+
+        .about-content {
+            position: relative;
+        }
+
+        .about-text {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+        }
+
+        .about-text p + p { margin-top: 1.5rem; }
+
+        .about-right-title {
+            font-size: 1.6rem;
+            font-weight: 400;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            padding-left: 1.5rem;
+            border-left: 3px solid var(--accent);
+            color: var(--text-main);
+        }
+
+        .about-right-title strong {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* ── SERVICES ── */
+        .services {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3.5rem 2.5rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at top right, rgba(249, 115, 22, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .service-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--border-hover);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(249, 115, 22, 0.1);
+        }
+        
+        .service-card:hover::after { opacity: 1; }
+
+        .service-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            color: var(--accent);
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            font-family: monospace;
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover .service-num {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+        }
+
+        .service-card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* ── CENÍK ── */
+        .pricing-intro {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+            font-weight: 300;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .price-table-wrapper {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            padding: 1px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 29px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(20,20,20,0.8) 0%, rgba(10,10,10,0.95) 100%);
+        }
+
+        .price-table th {
+            text-align: left;
+            padding: 1.5rem 2rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.3);
+        }
+
+        .price-table td {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 1.05rem;
+            color: var(--text-main);
+            font-weight: 400;
+        }
+
+        .price-table tr:last-child td { border-bottom: none; }
+
+        .price-table tr {
+            transition: background 0.2s ease;
+        }
+
+        .price-table tbody tr:hover { 
+            background: rgba(255,255,255,0.03); 
+        }
+
+        .price-table td:nth-child(3) {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+        }
+
+        .price-badge {
+            display: inline-block;
+            background: rgba(249, 115, 22, 0.15);
+            color: var(--accent);
+            padding: 0.35rem 0.85rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.1);
+        }
+
+        .price-note {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        /* ── DOPRAVA ── */
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .delivery-text {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 3rem;
+        }
+
+        .delivery-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .delivery-tags span {
+            padding: 0.6rem 1.2rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .delivery-tags span:hover {
+            border-color: var(--accent);
+            background: rgba(249, 115, 22, 0.1);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.15);
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .feature-list li {
+            display: flex;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-list li:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(10px);
+        }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent);
+            opacity: 0.1;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-list strong {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        .feature-list p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        /* ── KONTAKT ── */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 5rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 40px;
+            padding: 4rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .contact-block { margin-bottom: 3.5rem; }
+        .contact-block:last-child { margin-bottom: 0; }
+
+        .contact-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+
+        .contact-value {
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #fff;
+        }
+
+        .contact-value a {
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .contact-value a::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-value a:hover { 
+            color: var(--text-main); 
+            text-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+        
+        .contact-value a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .contact-detail {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-weight: 300;
+        }
+
+        .contact-map-wrapper {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            height: 100%;
+            min-height: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .contact-map-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+            border-radius: 24px;
+        }
+
+        .contact-map {
+            width: 100%;
+            height: 100%;
+            border: none;
+            filter: grayscale(100%) invert(90%) contrast(1.2);
+            transition: filter 0.5s ease;
+        }
+
+        .contact-map-wrapper:hover .contact-map {
+            filter: grayscale(80%) invert(90%) contrast(1.2);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 3rem 3rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            background: #020202;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+        
+        .footer-logo {
+            height: 24px;
+            filter: invert(1) opacity(0.5);
+            transition: opacity 0.3s ease;
+        }
+        
+        .footer-logo:hover {
+            opacity: 1;
+        }
+
+        /* ── MOBILE MENU ── */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(5,5,5,0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu.active { 
+            display: flex; 
+            opacity: 1;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .mobile-menu a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .mobile-menu a:hover { color: var(--accent); transform: scale(1.1); }
+        .mobile-menu a:last-child { 
+            margin-top: 1rem;
+            font-size: 1.5rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #ff914d 0%, #ea580c 100%);
+            border-radius: 100px;
+            color: #000;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .hero-title { font-size: clamp(3rem, 6vw, 5rem); }
+            .section-title { font-size: 3rem; }
+            .contact-grid { padding: 3rem; gap: 4rem; }
+            .about-grid { gap: 4rem; }
+        }
+
+        @media (max-width: 900px) {
+            .nav-center, .nav-cta { display: none; }
+            .hamburger { display: block; }
+
+            nav { padding: 0 1.5rem; height: 70px; }
+            section { padding: 5rem 1.5rem; }
+
+            .hero-content { padding: 0 1.5rem; }
+            .hero-title { font-size: clamp(2.8rem, 10vw, 4rem); }
+
+            .stats-row {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 4rem 1.5rem;
+            }
+
+            .about-grid,
+            .delivery-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .contact-grid { padding: 2rem 1.5rem; border-radius: 24px; }
+            
+            .contact-map-wrapper { min-height: 300px; }
+
+            .services-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+
+            .footer-inner {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+            
+            .ambient-glow { width: 300px; height: 300px; }
+        }
+        
+        @media (max-width: 600px) {
+            .price-table th, .price-table td { padding: 1rem 1.2rem; font-size: 0.9rem; }
+            .price-table td:nth-child(3) { font-size: 1.1rem; }
+            .feature-list li { flex-direction: column; padding: 1.5rem; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AMBIENT GLOWS -->
+    <div class="ambient-glow glow-top-right"></div>
+    <div class="ambient-glow glow-bottom-left"></div>
+    <div class="ambient-glow glow-center"></div>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <img src="logo.svg" alt="Dřevo na topení" class="nav-logo">
+        <ul class="nav-center">
+            <li><a href="#o-nas">O nás</a></li>
+            <li><a href="#sortiment">Sortiment</a></li>
+            <li><a href="#cenik">Ceník</a></li>
+            <li><a href="#doprava">Doprava</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+        <a href="tel:+420603463606" class="nav-cta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            603 463 606
+        </a>
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#o-nas" onclick="toggleMenu()">O nás</a>
+        <a href="#sortiment" onclick="toggleMenu()">Sortiment</a>
+        <a href="#cenik" onclick="toggleMenu()">Ceník</a>
+        <a href="#doprava" onclick="toggleMenu()">Doprava</a>
+        <a href="#kontakt" onclick="toggleMenu()">Kontakt</a>
+        <a href="tel:+420603463606" onclick="toggleMenu()">603 463 606</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="Drevo Na Topeni - Promo.MP4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-eyebrow">Královéhradecký kraj &middot; Od roku 2001</div>
+            <h1 class="hero-title">Palivové a<br><span class="highlight">krbové dřevo</span></h1>
+            <p class="hero-desc">Štípané dřevo z lokálních zdrojů s dopravou až k vám domů. Tradiční kvalita pro oblast Krkonoš, Trutnovska a Podkrkonoší.</p>
+            <a href="tel:+420603463606" class="btn btn-accent">
+                Objednat hned
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats-wrapper">
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">Let na trhu</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50 km</div>
+                <div class="stat-label">Dosah dopravy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Spokojených zákazníků ročně</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- O NÁS -->
+    <section id="o-nas">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">O nás</p>
+                <h2 class="section-title">Spolehlivý dodavatel dřeva<br>již <strong class="orange-text">přes dvě dekády</strong></h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>Od roku 2001 zásobujeme domácnosti a firmy v Královéhradeckém kraji kvalitním palivovým a krbovým dřevem. Naše dřevo pochází z lokálních zdrojů a je pečlivě zpracováno.</p>
+                        <p>Zajišťujeme kompletní servis od přípravy dřeva přes jeho nařezání na požadovanou délku až po dopravu přímo k vám domů. Poradíme vám s výběrem správného druhu dřeva pro váš typ vytápění.</p>
+                    </div>
+                    <p class="about-right-title">Dřevo vybíráme a zpracováváme tak, aby <strong>splňovalo ty nejvyšší standardy</strong> kvality a výhřevnosti.</p>
+                </div>
+                <div class="about-image">
+                    <!-- Placeholder color block to represent where image/video was, since they didn't have an img tag here previously, let's keep it abstract or add a nice glowing element -->
+                    <div style="width: 100%; height: 400px; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(249, 115, 22, 0.1)); display: flex; align-items: center; justify-content: center; position: relative; border-radius: 30px;">
+                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="rgba(249, 115, 22, 0.4)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l5 5L3 18l3 3 5-5 5 5 1.2-.7c.4-.2.7-.6.6-1.1z"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SORTIMENT -->
+    <section class="services" id="sortiment">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Sortiment</p>
+                <h2 class="section-title">Co <strong class="orange-text">nabízíme</strong></h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-num">01</div>
+                    <h3>Palivové dřevo</h3>
+                    <p>Štípané palivové dřevo v délkách 33 cm a 50 cm. Ideální volba pro klasické kotle, kamna na tuhá paliva a centrální vytápění rodinných domů.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-num">02</div>
+                    <h3>Krbové dřevo</h3>
+                    <p>Pečlivě vybrané a nařezané dřevo optimalizované speciálně pro krby a krbová kamna. Zaručuje krásný plamen, příjemnou vůni a dlouhé hoření.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-num">03</div>
+                    <h3>Sušené dřevo</h3>
+                    <p>Prémiové sušené dřevo s minimální vlhkostí připravené pro okamžité použití. Nabízí maximální výhřevnost, méně kouře a dokonale čisté spalování.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CENÍK -->
+    <section id="cenik">
+        <div class="ambient-glow glow-center" style="opacity: 0.05;"></div>
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Ceník</p>
+                <h2 class="section-title">Přehled <strong>cen</strong></h2>
+            </div>
+            <p class="pricing-intro">Všechny ceny jsou uvedeny včetně DPH. Cena dopravy se odvíjí od vzdálenosti – pro detailní cenovou kalkulaci nás neváhejte kontaktovat.</p>
+            <div class="price-table-wrapper">
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th>Druh dřeva</th>
+                            <th>Délka</th>
+                            <th>Cena / prms</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Bříza – palivové dřevo</td>
+                            <td>33 cm</td>
+                            <td>1 390 Kč</td>
+                            <td><span class="price-badge">Akce</span></td>
+                        </tr>
+                        <tr>
+                            <td>Bříza – palivové dřevo</td>
+                            <td>50 cm</td>
+                            <td>1 390 Kč</td>
+                            <td><span class="price-badge">Akce</span></td>
+                        </tr>
+                        <tr>
+                            <td>Příplatek za sušené dřevo</td>
+                            <td>–</td>
+                            <td>+ 500 Kč</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="price-note">Pro kompletní ceník všech druhů dřeva (smrk, borovice, dub, buk) a aktuální ceny nás kontaktujte telefonicky. Rádi vám připravíme individuální nezávaznou nabídku.</p>
+        </div>
+    </section>
+
+    <!-- DOPRAVA -->
+    <section class="delivery" id="doprava">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Doprava</p>
+                <h2 class="section-title">Doručíme až <strong class="orange-text">k vám</strong></h2>
+            </div>
+            <div class="delivery-grid">
+                <div>
+                    <p class="delivery-text">Zajišťujeme rychlou a spolehlivou dopravu v rámci celého Královéhradeckého kraje se zaměřením zejména na Krkonoše, Trutnovsko a Podkrkonoší.</p>
+                    <div class="delivery-tags">
+                        <span>Trutnov</span>
+                        <span>Dvůr Králové n. L.</span>
+                        <span>Vrchlabí</span>
+                        <span>Špindlerův Mlýn</span>
+                        <span>Hostinné</span>
+                        <span>Úpice</span>
+                        <span>Jaroměř</span>
+                        <span>Náchod</span>
+                        <span>Pec pod Sněžkou</span>
+                        <span>Janské Lázně</span>
+                    </div>
+                </div>
+                <ul class="feature-list">
+                    <li>
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        </div>
+                        <div>
+                            <strong>Vlastní vozový park</strong>
+                            <p>Dřevo přivezeme přímo k vašemu domu vlastním nákladním vozem, což zaručuje bezpečné a včasné dodání.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <strong>Flexibilní termíny</strong>
+                            <p>Domluvíme se na termínu dodání, který bude plně vyhovovat vašim časovým možnostem a potřebám.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                        </div>
+                        <div>
+                            <strong>Transparentní ceny</strong>
+                            <p>Cena za dopravu vždy férově závisí na přesné vzdálenosti. Při zadání objednávky vám okamžitě sdělíme konečnou částku.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- KONTAKT -->
+    <section id="kontakt">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Kontakt</p>
+                <h2 class="section-title">Ozvěte se <strong class="orange-text">nám</strong></h2>
+            </div>
+            <div class="contact-grid">
+                <div>
+                    <div class="contact-block">
+                        <div class="contact-label">Objednávky a informace</div>
+                        <div class="contact-value"><a href="tel:+420603463606">603 463 606</a></div>
+                        <div class="contact-detail">pan Novák</div>
+                    </div>
+                    <div class="contact-block">
+                        <div class="contact-label">Kancelář</div>
+                        <div class="contact-value"><a href="tel:+420499441540">499 441 540</a></div>
+                    </div>
+                    <div class="contact-block">
+                        <div class="contact-label">Provozní doba</div>
+                        <div class="contact-value">Po – Pá</div>
+                        <div class="contact-detail">8:00 – 16:00</div>
+                    </div>
+                </div>
+                <div class="contact-map-wrapper">
+                    <iframe
+                        class="contact-map"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d82123.79946024582!2d15.8445!3d50.5611!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470e015a23cabb91%3A0x400af0f6614e1b0!2sTrutnov!5e0!3m2!1scs!2scz!4v1"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Mapa – oblast Trutnov">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <img src="logo.svg" alt="Logo" class="footer-logo" onerror="this.style.display='none'">
+            <p>&copy; 2001–2025 Dřevo na topení &middot; Královéhradecký kraj</p>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+            if (menu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Add smooth reveal animations for scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('section > .container > *').forEach(el => {
+            if(!el.classList.contains('section-header')) {
+                el.style.opacity = "0";
+                el.style.transform = "translateY(30px)";
+                el.style.transition = "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
+                observer.observe(el);
+            }
+        });
+        
+        document.querySelectorAll('.section-header').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            el.style.transition = "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+</html>
