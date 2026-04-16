@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dřevo na topení – Palivové a krbové dřevo | Královéhradecký kraj</title>
+    <meta name="description" content="Prodej štípaného palivového a krbového dřeva v Královéhradeckém kraji. Dodáváme do Trutnova, Dvora Králové, Vrchlabí a okolí. Od roku 2001.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #ffffff;
+            --warm-50: #fdf8f3;
+            --warm-100: #f5ede3;
+            --warm-200: #e8ddd0;
+            --gray-400: #9a9185;
+            --gray-500: #6b6158;
+            --gray-700: #3d3530;
+            --gray-900: #1c1614;
+            --orange: #e8600a;
+            --orange-dark: #c74f06;
+            --orange-glow: #ff7a22;
+            --orange-bg: #fff3ea;
+            --amber: #d97706;
+            --font: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: var(--warm-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 3rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(253,248,243,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        nav.scrolled {
+            border-bottom-color: var(--warm-200);
+        }
+
+        .nav-logo { height: 32px; }
+
+        .nav-center {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-center a {
+            color: var(--gray-500);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .nav-center a:hover { color: var(--gray-900); }
+
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.5rem 1.25rem;
+            background: var(--orange);
+            border: 1px solid var(--orange);
+            border-radius: 100px;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--orange-dark);
+            border-color: var(--orange-dark);
+        }
+
+        .nav-cta svg { width: 14px; height: 14px; }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 20px;
+            height: 1.5px;
+            background: var(--gray-900);
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(253,248,243,0) 0%,
+                rgba(253,248,243,0.3) 55%,
+                rgba(253,248,243,1) 100%
+            );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem 6rem;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--orange);
+            margin-bottom: 1rem;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+        }
+
+        .hero-title .highlight {
+            color: var(--orange);
+        }
+
+        .hero-desc {
+            font-size: 1.125rem;
+            color: var(--gray-500);
+            max-width: 480px;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 100px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--orange);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background: var(--orange-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(232, 96, 10, 0.3);
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ── SECTIONS ── */
+        section { padding: 7rem 3rem; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--orange);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .section-title strong { font-weight: 800; }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+            padding: 4rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            flex: 1;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            border: 1px solid var(--warm-200);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            color: var(--orange);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        /* ── O NÁS ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: start;
+        }
+
+        .about-text {
+            font-size: 1.0625rem;
+            color: var(--gray-500);
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .about-text p + p { margin-top: 1.5rem; }
+
+        .about-right-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            margin-bottom: 2rem;
+        }
+
+        .about-right-title strong {
+            font-weight: 800;
+            color: var(--orange);
+        }
+
+        /* ── SERVICES ── */
+        .services {
+            background: var(--gray-900);
+            color: var(--white);
+        }
+
+        .services .section-eyebrow { color: var(--orange-glow); }
+        .services .section-title { color: var(--white); }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--orange);
+            transform: translateY(-4px);
+        }
+
+        .service-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--orange);
+            color: var(--white);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .service-card p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        /* ── CENÍK ── */
+        .pricing-intro {
+            color: var(--gray-500);
+            font-size: 1.0625rem;
+            max-width: 560px;
+            margin-bottom: 3rem;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--warm-200);
+        }
+
+        .price-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--gray-400);
+            border-bottom: 1px solid var(--warm-200);
+        }
+
+        .price-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--warm-100);
+            font-size: 0.9375rem;
+        }
+
+        .price-table tr:last-child td { border-bottom: none; }
+
+        .price-table tr {
+            transition: background 0.15s;
+        }
+
+        .price-table tbody tr:hover { background: var(--warm-50); }
+
+        .price-table td:nth-child(3) {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--orange);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .price-badge {
+            display: inline-block;
+            background: var(--orange);
+            color: var(--white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .price-note {
+            margin-top: 2rem;
+            padding: 1.5rem 0;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+
+        /* ── DOPRAVA ── */
+        .delivery {
+            background: var(--white);
+        }
+
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: start;
+        }
+
+        .delivery-text {
+            color: var(--gray-500);
+            font-size: 1.0625rem;
+            line-height: 1.8;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+        }
+
+        .delivery-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .delivery-tags span {
+            padding: 0.5rem 1rem;
+            background: var(--warm-50);
+            border: 1px solid var(--warm-200);
+            border-radius: 100px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            transition: all 0.2s;
+        }
+
+        .delivery-tags span:hover {
+            border-color: var(--orange);
+            background: var(--orange);
+            color: var(--white);
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.75rem 0;
+            border-bottom: 1px solid var(--warm-200);
+        }
+
+        .feature-list li:first-child { padding-top: 0; }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            background: var(--orange);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--white);
+        }
+
+        .feature-list strong {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-list p {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* ── KONTAKT ── */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 4rem;
+        }
+
+        .contact-block { margin-bottom: 3rem; }
+
+        .contact-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray-400);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-value {
+            font-size: 1.75rem;
+            font-weight: 300;
+            letter-spacing: -0.01em;
+        }
+
+        .contact-value a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .contact-value a:hover { color: var(--orange); }
+
+        .contact-detail {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        .contact-map {
+            width: 100%;
+            height: 100%;
+            min-height: 360px;
+            border: 1px solid var(--warm-200);
+            border-radius: 16px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 2.5rem 3rem;
+            border-top: 1px solid var(--warm-200);
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer p {
+            color: var(--gray-400);
+            font-size: 0.8125rem;
+        }
+
+        /* ── MOBILE MENU ── */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: var(--warm-50);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .mobile-menu.active { display: flex; }
+
+        .mobile-menu a {
+            color: var(--gray-900);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .mobile-menu a:hover { color: var(--orange); }
+        .mobile-menu a:last-child { color: var(--orange); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .nav-center, .nav-cta { display: none; }
+            .hamburger { display: block; }
+
+            nav { padding: 0 1.5rem; }
+            section { padding: 4rem 1.5rem; }
+
+            .hero-content { padding: 0 1.5rem 4rem; }
+            .hero-title { font-size: clamp(2.5rem, 8vw, 3.5rem); }
+
+            .stats-row {
+                flex-direction: column;
+                gap: 2rem;
+                padding: 3rem 1.5rem;
+            }
+
+            .about-grid,
+            .delivery-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <img src="logo.svg" alt="Dřevo na topení" class="nav-logo">
+        <ul class="nav-center">
+            <li><a href="#o-nas">O nás</a></li>
+            <li><a href="#sortiment">Sortiment</a></li>
+            <li><a href="#cenik">Ceník</a></li>
+            <li><a href="#doprava">Doprava</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+        <a href="tel:+420603463606" class="nav-cta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            603 463 606
+        </a>
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#o-nas" onclick="toggleMenu()">O nás</a>
+        <a href="#sortiment" onclick="toggleMenu()">Sortiment</a>
+        <a href="#cenik" onclick="toggleMenu()">Ceník</a>
+        <a href="#doprava" onclick="toggleMenu()">Doprava</a>
+        <a href="#kontakt" onclick="toggleMenu()">Kontakt</a>
+        <a href="tel:+420603463606" onclick="toggleMenu()">603 463 606</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="Drevo Na Topeni - Promo.MP4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">Královéhradecký kraj &middot; Od roku 2001</p>
+            <h1 class="hero-title">Palivové a<br><span class="highlight">krbové dřevo</span></h1>
+            <p class="hero-desc">Štípané dřevo z lokálních zdrojů s dopravou až k vám domů. Oblast Krkonoš, Trutnovska a Podkrkonoší.</p>
+            <a href="tel:+420603463606" class="btn btn-primary">
+                Objednat
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-item">
+            <div class="stat-number">20+</div>
+            <div class="stat-label">Let na trhu</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">50 km</div>
+            <div class="stat-label">Dosah dopravy</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">100+</div>
+            <div class="stat-label">Spokojených zákazníků ročně</div>
+        </div>
+    </div>
+
+    <!-- O NÁS -->
+    <section id="o-nas">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">O nás</p>
+                <h2 class="section-title">Spolehlivý dodavatel dřeva<br>již <strong>přes dvě dekády</strong></h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>Od roku 2001 zásobujeme domácnosti a firmy v Královéhradeckém kraji kvalitním palivovým a krbovým dřevem. Naše dřevo pochází z lokálních zdrojů a je pečlivě zpracováno.</p>
+                    <p>Zajišťujeme kompletní servis od přípravy dřeva přes jeho nařezání na požadovanou délku až po dopravu přímo k vám domů. Poradíme vám s výběrem správného druhu dřeva pro váš kotel, kamna nebo krb.</p>
+                </div>
+                <div>
+                    <p class="about-right-title">Dřevo vybíráme a zpracováváme tak, aby <strong>splňovalo ty nejvyšší standardy</strong> kvality a výhřevnosti.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SORTIMENT -->
+    <section class="services" id="sortiment">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Sortiment</p>
+                <h2 class="section-title">Co <strong>nabízíme</strong></h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-num">01</div>
+                    <h3>Palivové dřevo</h3>
+                    <p>Štípané palivové dřevo v délkách 33 cm a 50 cm. Ideální pro kotle, kamna na tuhá paliva a centrální vytápění rodinných domů.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-num">02</div>
+                    <h3>Krbové dřevo</h3>
+                    <p>Pečlivě vybrané a nařezané dřevo speciálně pro krby a krbová kamna. Krásný plamen, příjemná vůně a dlouhé hoření.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-num">03</div>
+                    <h3>Sušené dřevo</h3>
+                    <p>Sušené dřevo s nižší vlhkostí pro okamžité použití. Vyšší výhřevnost, méně kouře a čistší spalování.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CENÍK -->
+    <section id="cenik">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Ceník</p>
+                <h2 class="section-title">Přehled <strong>cen</strong></h2>
+            </div>
+            <p class="pricing-intro">Všechny ceny jsou uvedeny včetně DPH. Cena dopravy se odvíjí od vzdálenosti – pro přesnou kalkulaci nás kontaktujte.</p>
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th>Druh dřeva</th>
+                        <th>Délka</th>
+                        <th>Cena / prms</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bříza – palivové dřevo</td>
+                        <td>33 cm</td>
+                        <td>1 390 Kč</td>
+                        <td><span class="price-badge">Akce</span></td>
+                    </tr>
+                    <tr>
+                        <td>Bříza – palivové dřevo</td>
+                        <td>50 cm</td>
+                        <td>1 390 Kč</td>
+                        <td><span class="price-badge">Akce</span></td>
+                    </tr>
+                    <tr>
+                        <td>Příplatek za sušené dřevo</td>
+                        <td>–</td>
+                        <td>+ 500 Kč</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="price-note">Pro kompletní ceník všech druhů dřeva a aktuální ceny nás kontaktujte telefonicky. Rádi vám připravíme individuální nabídku.</p>
+        </div>
+    </section>
+
+    <!-- DOPRAVA -->
+    <section class="delivery" id="doprava">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Doprava</p>
+                <h2 class="section-title">Doručíme až <strong>k vám</strong></h2>
+            </div>
+            <div class="delivery-grid">
+                <div>
+                    <p class="delivery-text">Zajišťujeme dopravu v rámci celého Královéhradeckého kraje se zaměřením na Krkonoše, Trutnovsko a Podkrkonoší.</p>
+                    <div class="delivery-tags">
+                        <span>Trutnov</span>
+                        <span>Dvůr Králové n. L.</span>
+                        <span>Vrchlabí</span>
+                        <span>Špindlerův Mlýn</span>
+                        <span>Hostinné</span>
+                        <span>Úpice</span>
+                        <span>Jaroměř</span>
+                        <span>Náchod</span>
+                        <span>Pec pod Sněžkou</span>
+                        <span>Janské Lázně</span>
+                    </div>
+                </div>
+                <ul class="feature-list">
+                    <li>
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        </div>
+                        <div>
+                            <strong>Vlastní doprava</strong>
+                            <p>Dřevo přivezeme přímo k vašemu domu vlastním nákladním vozem.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <strong>Flexibilní termíny</strong>
+                            <p>Domluvíme se na termínu dodání, který vám nejlépe vyhovuje.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                        </div>
+                        <div>
+                            <strong>Férové ceny dopravy</strong>
+                            <p>Cena závisí na vzdálenosti. Při objednávce vám sdělíme přesnou částku.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- KONTAKT -->
+    <section id="kontakt">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-eyebrow">Kontakt</p>
+                <h2 class="section-title">Ozvěte se <strong>nám</strong></h2>
+            </div>
+            <div class="contact-grid">
+                <div>
+                    <div class="contact-block">
+                        <div class="contact-label">Objednávky a informace</div>
+                        <div class="contact-value"><a href="tel:+420603463606">603 463 606</a></div>
+                        <div class="contact-detail">pan Novák</div>
+                    </div>
+                    <div class="contact-block">
+                        <div class="contact-label">Kancelář</div>
+                        <div class="contact-value"><a href="tel:+420499441540">499 441 540</a></div>
+                    </div>
+                    <div class="contact-block">
+                        <div class="contact-label">Provozní doba</div>
+                        <div class="contact-value">Po – Pá</div>
+                        <div class="contact-detail">8:00 – 16:00</div>
+                    </div>
+                </div>
+                <div>
+                    <iframe
+                        class="contact-map"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d82123.79946024582!2d15.8445!3d50.5611!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470e015a23cabb91%3A0x400af0f6614e1b0!2sTrutnov!5e0!3m2!1scs!2scz!4v1"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Mapa – oblast Trutnov">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <p>&copy; 2001–2025 Dřevo na topení</p>
+            <p>Královéhradecký kraj</p>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        function toggleMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+    </script>
+
+</body>
+</html>
